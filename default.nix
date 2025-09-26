@@ -6,6 +6,7 @@
   gifsicle,
   libjpeg,
   libavif,
+  stdenv,
 }:
 let
   jpegiptc = python3.pkgs.buildPythonPackage rec {
@@ -108,7 +109,10 @@ python3.pkgs.buildPythonApplication rec {
     owner = "thumbor";
     repo = "thumbor";
     tag = version;
-    hash = "sha256-rTQcOkkratFmqXnGkZK/434WmuTXS3Rb+J8jbZ7S6ZA=";
+    hash = "sha256-Q1KVaF++Ds5r5L0bbJIHUNUf62nvS2qKrYRjaC3DKHs=";
+    postFetch = ''
+      rm "$out/tests/fixtures/images/alabama1_ap620é.jpg"
+    '';
   };
 
   build-system = [
