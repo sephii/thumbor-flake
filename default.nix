@@ -108,11 +108,10 @@ python3.pkgs.buildPythonApplication rec {
   src = fetchFromGitHub {
     owner = "thumbor";
     repo = "thumbor";
-    tag = version;
-    hash = "sha256-Q1KVaF++Ds5r5L0bbJIHUNUf62nvS2qKrYRjaC3DKHs=";
-    postFetch = ''
-      rm "$out/tests/fixtures/images/alabama1_ap620é.jpg"
-    '';
+    # TODO: replace by tag once 7.7.8 has been released. See
+    # https://github.com/thumbor/thumbor/pull/1754
+    rev = "b9d3b5728c64998d6d67e119b219f1a68c299419";
+    hash = "sha256-RhHlHMO2sIUY8EcD5SG7rjag2O0JEHaH5Oz9BolM9wI=";
   };
 
   build-system = [
