@@ -17,6 +17,12 @@
       }
     )
     // {
-      nixosModules.thumbor = import ./module.nix;
+      nixosModules.default = import ./module.nix;
+
+      overlays.default = (
+        final: prev: {
+          thumbor = final.callPackage ./default.nix { };
+        }
+      );
     };
 }
