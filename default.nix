@@ -75,14 +75,14 @@ let
 
   pillow-avif-plugin = python3.pkgs.buildPythonPackage rec {
     pname = "pillow-avif-plugin";
-    version = "1.5.2";
+    version = "1.5.5";
     pyproject = true;
 
     src = fetchFromGitHub {
       owner = "fdintino";
       repo = "pillow-avif-plugin";
       tag = "v${version}";
-      hash = "sha256-gdDVgVNympxlTzj1VUqO+aU1/xWNjDm97a0biOTlKtA=";
+      hash = "sha256-Rk4H5Vr26cQD3G3gOJz5/8RpcxeOJSrzxx821lWkIqA=";
     };
 
     build-system = [ python3.pkgs.setuptools ];
