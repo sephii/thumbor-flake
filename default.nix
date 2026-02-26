@@ -9,7 +9,26 @@
   stdenv,
 }:
 let
-  jpegiptc = python3.pkgs.buildPythonPackage rec {
+  python3' = python3.override {
+    packageOverrides = self: super: {
+      pillow = super.pillow.overridePythonAttrs (oldAttrs: rec {
+        version = "11.3.0";
+
+        src = fetchFromGitHub {
+          owner = "python-pillow";
+          repo = "pillow";
+          tag = version;
+          hash = "sha256-VOOIxzTyERI85CvA2oIutybiivU14kIko8ysXpmwUN8=";
+        };
+
+        dependencies = (oldAttrs.dependencies or [ ]) ++ [ self.pybind11 ];
+      });
+    };
+
+    self = python3;
+  };
+
+  jpegiptc = python3'.pkgs.buildPythonPackage rec {
     pname = "jpegiptc";
     version = "1.5";
     pyproject = true;
@@ -22,8 +41,8 @@ let
     };
 
     build-system = [
-      python3.pkgs.setuptools
-      python3.pkgs.wheel
+      python3'.pkgs.setuptools
+      python3'.pkgs.wheel
     ];
 
     pythonImportsCheck = [
@@ -49,17 +68,17 @@ let
         hash = "sha256-P1EhAUTIyjAY5nXYoB7F67QqQHlxdz7JzRoPcRFN8f0=";
       };
     in
-    python3.pkgs.buildPythonPackage rec {
+    python3'.pkgs.buildPythonPackage rec {
       pname = "thumbor-plugins-gifv";
       inherit version;
 
       pyproject = true;
 
       build-system = [
-        python3.pkgs.setuptools
+        python3'.pkgs.setuptools
       ];
 
-      dependencies = [ python3.pkgs.webcolors ];
+      dependencies = [ python3'.pkgs.webcolors ];
 
       pythonRelaxDeps = [ "webcolors" ];
 
@@ -73,7 +92,7 @@ let
       };
     };
 
-  pillow-avif-plugin = python3.pkgs.buildPythonPackage rec {
+  pillow-avif-plugin = python3'.pkgs.buildPythonPackage rec {
     pname = "pillow-avif-plugin";
     version = "1.5.5";
     pyproject = true;
@@ -85,13 +104,13 @@ let
       hash = "sha256-Rk4H5Vr26cQD3G3gOJz5/8RpcxeOJSrzxx821lWkIqA=";
     };
 
-    build-system = [ python3.pkgs.setuptools ];
+    build-system = [ python3'.pkgs.setuptools ];
 
     buildInputs = [ libavif ];
 
-    dependencies = [ python3.pkgs.pillow ];
+    dependencies = [ python3'.pkgs.pillow ];
 
-    nativeCheckInputs = [ python3.pkgs.pytestCheckHook ];
+    nativeCheckInputs = [ python3'.pkgs.pytestCheckHook ];
 
     meta = {
       description = "Pillow plugin that adds support for AVIF files";
@@ -100,7 +119,7 @@ let
     };
   };
 in
-python3.pkgs.buildPythonApplication rec {
+python3'.pkgs.buildPythonApplication rec {
   pname = "thumbor";
   version = "7.7.7";
   pyproject = true;
@@ -115,14 +134,14 @@ python3.pkgs.buildPythonApplication rec {
   };
 
   build-system = [
-    python3.pkgs.setuptools
+    python3'.pkgs.setuptools
   ];
 
   # Thumbor depends on `remotecv` for queued detection, however `remotecv`
   # depends on `pyres` which has been removed from nixpkgs because it’s
   # abandoned. The package still works fine without `remotecv` as long as
   # queued detection is not configured.
-  dependencies = with python3.pkgs; [
+  dependencies = with python3'.pkgs; [
     colorama
     derpconf
     jpegiptc
@@ -141,7 +160,7 @@ python3.pkgs.buildPythonApplication rec {
   ];
 
   optional-dependencies = {
-    svg = [ python3.pkgs.cairosvg ];
+    svg = [ python3'.pkgs.cairosvg ];
   };
 
   pythonRelaxDeps = [
@@ -157,13 +176,13 @@ python3.pkgs.buildPythonApplication rec {
   ];
 
   nativeCheckInputs = [
-    python3.pkgs.pytestCheckHook
+    python3'.pkgs.pytestCheckHook
     gifsicle
     libjpeg
     ffmpeg
   ];
 
-  checkInputs = with python3.pkgs; [
+  checkInputs = with python3'.pkgs; [
     cairosvg
     preggy
     pyssim
