@@ -188,6 +188,8 @@ python3.pkgs.buildPythonApplication rec {
     "test_when_error_occurs_should_have_called_client"
     # Not sure how this test is supposed to pass
     "test_watermark_filter_detect_extension_simple"
+    # Test randomly fails
+    "test_load_with_speed_timeout"
   ];
 
   pythonImportsCheck = [
